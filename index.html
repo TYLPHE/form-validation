@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>form-validation</title>
+  <style>
+    label {
+      display: block;
+    }
+    input:invalid {
+      border: 2px solid red;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="title">Form Validation</h1>
+
+  <form>
+    <label>Enter E-mail:
+      <input type="email" class="email" autocomplete="email" minlength="6" required>
+      <span class="email-error" aria-live="polite"></span>
+    </label>
+
+    <label>Country:
+      <input type="text" class="country" title="Country"  autocomplete="country-name" required>
+    </label>
+
+    <label>Zip Code:
+      <input type="text" class="zip" pattern="[0-9]{5}" title="Five digit zip code" maxlength="5"  autocomplete="postal-code" required>
+    </label>
+
+    <label>Password:
+      <input type="password" class="password" minlength="8" title="Password must be at least eight characters in length and contain at least one symbol and one number" required>
+    </label>
+
+    <label>Validate Password:
+      <input type="password" class="password-validation" minlength="8" title="Password must be at least eight characters in length and contain at least one symbol and one number" required>
+    </label>
+
+    <button class="submit">Submit</button>
+  </form>
+
+</body>
+
+<script defer>
+  const email = document.querySelector('.email');
+  const emailError = document.querySelector('.email-error');
+
+  email.addEventListener('input', () => validEmail());
+
+  const validEmail = () => {
+    if (email.validity.valid) {
+      emailError.textContent = '✓';
+      email.className = 'error';
+    } else {
+      showError();
+    }
+  };
+
+  const showError = () => {
+    if(email.validity.valueMissing) {
+      emailError.textContent = 'You need to enter an e-mail address.';
+    } else if(email.validity.typeMismatch) {
+      emailError.textContent = 'Entered value needs to be an e-mail address.';
+    } else if(email.validity.tooShort) {
+      emailError.textContent = `Email should be at least ${ email.minLength } characters; you entered ${ email.value.length }.`;
+    }
+
+// Set the styling appropriately
+emailError.className = 'error active';
+  };
+
+  const country = document.querySelector('.country');
+  const zipCode = document.querySelector('.zip');
+  const password = document.querySelector('.password');
+  const passwordValidation = document.querySelector('.password-validation');
+  const submit = document.querySelector('submit');
+
+
+</script>
+
+</html>
