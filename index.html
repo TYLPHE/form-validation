@@ -115,7 +115,7 @@
 
   const zipErrorCheck = () => {
     if (zipCode.validity.valueMissing) {
-      zipError.textContent = 'Please enter a zip code.';
+      zipError.textContent = 'Please enter a password.';
     } else if (zipCode.validity.tooShort) {
       zipError.textContent = `Zip code should be at least ${ zipCode.minLength } digits; you entered ${ zipCode.value.length }.`;
     }
