@@ -12,6 +12,15 @@
     input:invalid {
       border: 2px solid red;
     }
+    .country {
+      text-transform: capitalize;
+    }
+    .error-valid {
+      color: green;
+    }
+    .error-invalid {
+      color: red;
+    }
   </style>
 </head>
 <body>
@@ -19,24 +28,28 @@
 
   <form>
     <label>Enter E-mail:
-      <input type="email" class="email" autocomplete="email" minlength="6" required>
-      <span class="email-error" aria-live="polite"></span>
+      <input type="email" class="email" autocomplete="email" minlength="6" title="Enter a valid email." required>
+      <span class="email-error error-invalid" aria-live="polite"></span>
     </label>
 
     <label>Country:
-      <input type="text" class="country" title="Country"  autocomplete="country-name" required>
+      <input type="text" class="country" title="Country" minlength="1"; autocomplete="country-name" required>
+      <span class="country-error error-invalid" aria-live="polite"></span>
     </label>
 
     <label>Zip Code:
-      <input type="text" class="zip" pattern="[0-9]{5}" title="Five digit zip code" maxlength="5"  autocomplete="postal-code" required>
+      <input type="text" class="zip" pattern="[0-9]{5}" title="Five digit zip code" minlength="5" maxlength="5"  autocomplete="postal-code" required>
+      <span class="zip-error error-invalid" aria-live="polite"></span>
     </label>
 
     <label>Password:
       <input type="password" class="password" minlength="8" title="Password must be at least eight characters in length and contain at least one symbol and one number" required>
+      <span class="password-error error-invalid" aria-live="polite"></span>
     </label>
 
     <label>Validate Password:
-      <input type="password" class="password-validation" minlength="8" title="Password must be at least eight characters in length and contain at least one symbol and one number" required>
+      <input type="password" class="password-validation" minlength="8" title="Validate Password must match password field." required>
+      <span class="password-validation-error error-invalid" aria-live="polite"></span>
     </label>
 
     <button class="submit">Submit</button>
@@ -53,32 +66,96 @@
   const validEmail = () => {
     if (email.validity.valid) {
       emailError.textContent = '✓';
-      email.className = 'error';
+      emailError.className = 'error-valid';
     } else {
-      showError();
+      emailErrorCheck();
     }
   };
 
-  const showError = () => {
-    if(email.validity.valueMissing) {
+  const emailErrorCheck = () => {
+    if (email.validity.valueMissing) {
       emailError.textContent = 'You need to enter an e-mail address.';
-    } else if(email.validity.typeMismatch) {
-      emailError.textContent = 'Entered value needs to be an e-mail address.';
-    } else if(email.validity.tooShort) {
+    } else if (email.validity.tooShort) {
       emailError.textContent = `Email should be at least ${ email.minLength } characters; you entered ${ email.value.length }.`;
-    }
-
-// Set the styling appropriately
-emailError.className = 'error active';
+    } else if (email.validity.typeMismatch) {
+      emailError.textContent = 'Entered value needs to be an e-mail address.';
+    };
+    emailError.className = 'error-invalid';
   };
 
   const country = document.querySelector('.country');
+  const countryError = document.querySelector('.country-error');
+  country.addEventListener('input', () => validCountry());
+
+  const validCountry = () => {
+    if (country.validity.valid) {
+      countryError.textContent = '✓';
+      countryError.className = 'error-valid';
+    } else {
+      countryError.textContent = '✗';
+      countryError.className = 'error-invalid';
+      if (country.validity.tooShort) {
+      countryError.textContent = '✗'
+      }
+    }
+  };
+
   const zipCode = document.querySelector('.zip');
+  const zipError = document.querySelector('.zip-error');
+  zipCode.addEventListener('input', () => validZip());
+
+  const validZip = () => {
+    if (zipCode.validity.valid) {
+      zipError.textContent = '✓';
+      zipError.className = 'error-valid';
+    } else {
+      zipErrorCheck();
+    }
+  };
+
+  const zipErrorCheck = () => {
+    if (zipCode.validity.valueMissing) {
+      zipError.textContent = 'Please enter a zip code.';
+    } else if (zipCode.validity.tooShort) {
+      zipError.textContent = `Zip code should be at least ${ zipCode.minLength } digits; you entered ${ zipCode.value.length }.`;
+    }
+    zipError.className = 'error-invalid';
+  };
+
   const password = document.querySelector('.password');
+  const passwordError = document.querySelector('.password-error');
+  password.addEventListener('input', () => validPass());
+  const validPass = () => {
+    if (password.validity.valid) {
+      passwordError.textContent = '✓';
+      passwordError.className = 'error-valid';
+    } else {
+      passwordErrorCheck();
+    }
+  };
+
+  const passwordErrorCheck = () => {
+    if (password.validity.valueMissing) {
+      passwordError.textContent = 'Please enter a zip code.';
+    } else if (password.validity.tooShort) {
+      passwordError.textContent = `Password should be at least ${ password.minLength } characters; you entered ${ password.value.length }.`;
+    }
+    passwordError.className = 'error-invalid';
+  };
+
   const passwordValidation = document.querySelector('.password-validation');
-  const submit = document.querySelector('submit');
-
-
+  const passwordValidationError = document.querySelector('.password-validation-error');
+  passwordValidation.addEventListener('input', () => passMatch());
+  const passMatch = () => {
+    if (password.value === passwordValidation.value) {
+      passwordValidationError.textContent = '✓';
+      passwordValidationError.className = 'error-valid';
+    } else {
+      passwordValidationError.textContent = 'Password does not match.';
+      passwordValidationError.className = 'error-invalid';
+      passwordValidation.validity.valid = false;
+    }
+  };
 </script>
 
 </html>
